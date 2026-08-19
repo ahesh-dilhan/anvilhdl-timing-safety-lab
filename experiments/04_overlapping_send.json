@@ -1,0 +1,24 @@
+{
+  "name": "overlapping_send",
+  "description": "Two sends of the same response message overlap because the second may begin before the first promise is discharged.",
+  "expected": "unsafe",
+  "events": [
+    {"id": "request", "delay": 0},
+    {"id": "send_a_start", "after": ["request"], "delay": 1},
+    {"id": "send_a_end", "after": ["send_a_start"], "delay": 2},
+    {"id": "send_b_start", "after": ["request"], "delay": {"min": 2, "max": 3}},
+    {"id": "send_b_end", "after": ["send_b_start"], "delay": 2}
+  ],
+  "promises": [
+    {
+      "id": "send_a",
+      "message": "cache.response",
+      "interval": {"start": "send_a_start", "end": "send_a_end"}
+    },
+    {
+      "id": "send_b",
+      "message": "cache.response",
+      "interval": {"start": "send_b_start", "end": "send_b_end"}
+    }
+  ]
+}

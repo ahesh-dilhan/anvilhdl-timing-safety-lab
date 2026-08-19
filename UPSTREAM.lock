@@ -1,0 +1,6 @@
+# Official AnvilHDL source used by optional integration checks.
+# Update intentionally and record the reason in a commit message.
+repository=https://github.com/kisp-nus/anvil.git
+revision=d138cabedbfc3b65c08249ce6a55cb90dad959da
+observed_at=2026-08-20
+paper=arXiv:2503.19447v2

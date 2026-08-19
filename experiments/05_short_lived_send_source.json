@@ -1,0 +1,26 @@
+{
+  "name": "short_lived_send_source",
+  "description": "A response send remains promised after the source data has expired, even though no second send of that message competes with it.",
+  "expected": "unsafe",
+  "events": [
+    {"id": "produce", "delay": 0},
+    {"id": "send_start", "after": ["produce"], "delay": 1},
+    {"id": "source_expire", "after": ["produce"], "delay": 2},
+    {"id": "send_end", "after": ["send_start"], "delay": 3}
+  ],
+  "lifetimes": [
+    {
+      "id": "response_valid",
+      "resource": "response_data",
+      "interval": {"start": "produce", "end": "source_expire"}
+    }
+  ],
+  "promises": [
+    {
+      "id": "response_send",
+      "message": "memory.response",
+      "resource": "response_data",
+      "interval": {"start": "send_start", "end": "send_end"}
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "cases": [
+    {
+      "path": "anvil/safe/dynamic_memory_client.anvil",
+      "expect": "pass",
+      "concept": "dynamic request-to-response lifetime"
+    },
+    {
+      "path": "anvil/safe/fixed_lifetime_spacing.anvil",
+      "expect": "pass",
+      "concept": "non-overlapping fixed message promises"
+    },
+    {
+      "path": "anvil/unsafe/mutate_while_loaned.anvil",
+      "expect": "fail",
+      "concept": "valid register mutation",
+      "diagnostic_any": [
+        "Attempted assignment to a borrowed register"
+      ]
+    },
+    {
+      "path": "anvil/unsafe/use_after_expiry.anvil",
+      "expect": "fail",
+      "concept": "valid value use",
+      "diagnostic_any": [
+        "Value does not live long enough"
+      ]
+    },
+    {
+      "path": "anvil/unsafe/overlapping_message_send.anvil",
+      "expect": "fail",
+      "concept": "valid message send",
+      "diagnostic_any": [
+        "Potentially conflicting message sending",
+        "Non-linearizable message use"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+chan held_message {
+    left value : (logic[8]@#2)
+}
+
+proc Consumer(ep : left held_message) {
+    loop {
+        let value = recv ep.value >>
+        dprint "value = %d" (value) >>
+        cycle 1
+    }
+}
+
+proc Producer(ep : right held_message) {
+    reg value : logic[8];
+    loop {
+        send ep.value(*value) >>
+        cycle 2 >>
+        set value := *value + 8'd1
+    }
+}
+
+proc fixed_lifetime_spacing() {
+    chan held_le -- held_ri : held_message;
+    spawn Consumer(held_le);
+    spawn Producer(held_ri)
+}

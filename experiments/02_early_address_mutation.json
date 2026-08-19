@@ -1,0 +1,40 @@
+{
+  "name": "early_address_mutation",
+  "description": "An address register is overwritten after one cycle even though a dynamic lookup may retain its loan for up to three cycles.",
+  "expected": "unsafe",
+  "events": [
+    {"id": "request", "delay": 0},
+    {"id": "lookup_done", "after": ["request"], "delay": {"min": 1, "max": 3}},
+    {"id": "loan_release", "after": ["lookup_done"], "delay": 0},
+    {"id": "early_write", "after": ["request"], "delay": 1},
+    {"id": "early_write_done", "after": ["early_write"], "delay": 1}
+  ],
+  "lifetimes": [
+    {
+      "id": "address_valid",
+      "resource": "request_address",
+      "interval": {"start": "request", "end": "loan_release"}
+    }
+  ],
+  "uses": [
+    {
+      "id": "tag_lookup",
+      "resource": "request_address",
+      "interval": {"start": "request", "end": "lookup_done"}
+    }
+  ],
+  "loans": [
+    {
+      "id": "address_loan",
+      "register": "address_reg",
+      "interval": {"start": "request", "end": "loan_release"}
+    }
+  ],
+  "mutations": [
+    {
+      "id": "overwrite_address",
+      "register": "address_reg",
+      "interval": {"start": "early_write", "end": "early_write_done"}
+    }
+  ]
+}

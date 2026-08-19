@@ -1,0 +1,14 @@
+chan memory_read {
+    left req : (logic[8]@res),
+    right res : (logic[8]@req)
+}
+
+proc mutate_while_loaned(ep : right memory_read) {
+    reg address : logic[8];
+    loop {
+        send ep.req(*address) >>
+        set address := *address + 8'd1 >>
+        let data = recv ep.res >>
+        dprint "response = %d" (data)
+    }
+}

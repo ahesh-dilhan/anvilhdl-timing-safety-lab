@@ -1,0 +1,62 @@
+{
+  "name": "safe_dynamic_cache",
+  "description": "A cache lookup takes one to three cycles; the address changes only when its loan ends, and the response remains live through transmission.",
+  "expected": "safe",
+  "events": [
+    {"id": "request", "delay": 0},
+    {"id": "tag_ready", "after": ["request"], "delay": {"min": 1, "max": 3}},
+    {"id": "loan_release", "after": ["tag_ready"], "delay": 1},
+    {"id": "response_send", "after": ["loan_release"], "delay": 0},
+    {"id": "response_done", "after": ["response_send"], "delay": 1},
+    {"id": "next_request", "after": ["loan_release"], "delay": 0}
+  ],
+  "lifetimes": [
+    {
+      "id": "address_valid",
+      "resource": "request_address",
+      "interval": {"start": "request", "end": "loan_release"}
+    },
+    {
+      "id": "response_valid",
+      "resource": "response_data",
+      "interval": {"start": "tag_ready", "end": "response_done"}
+    }
+  ],
+  "uses": [
+    {
+      "id": "tag_lookup",
+      "resource": "request_address",
+      "interval": {"start": "request", "end": "tag_ready"}
+    },
+    {
+      "id": "output_transfer",
+      "resource": "response_data",
+      "interval": {"start": "response_send", "end": "response_done"}
+    }
+  ],
+  "loans": [
+    {
+      "id": "address_loan",
+      "register": "address_reg",
+      "interval": {"start": "request", "end": "loan_release"}
+    }
+  ],
+  "mutations": [
+    {
+      "id": "advance_address",
+      "register": "address_reg",
+      "interval": {
+        "start": "next_request",
+        "end": {"event": "next_request", "offset": 1}
+      }
+    }
+  ],
+  "promises": [
+    {
+      "id": "response_promise",
+      "message": "cache.response",
+      "resource": "response_data",
+      "interval": {"start": "response_send", "end": "response_done"}
+    }
+  ]
+}

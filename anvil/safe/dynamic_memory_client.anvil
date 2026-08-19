@@ -1,0 +1,31 @@
+chan memory_read {
+    left req : (logic[8]@res),
+    right res : (logic[8]@req)
+}
+
+proc Memory(ep : left memory_read) {
+    reg result : logic[8];
+    loop {
+        let address = recv ep.req >>
+        set result := address >>
+        cycle 1 >>
+        send ep.res(*result) >>
+        cycle 1
+    }
+}
+
+proc Client(ep : right memory_read) {
+    reg address : logic[8];
+    loop {
+        send ep.req(*address) >>
+        let data = recv ep.res >>
+        dprint "response = %d" (data);
+        set address := *address + 8'd1
+    }
+}
+
+proc dynamic_memory_client() {
+    chan memory_le -- memory_ri : memory_read;
+    spawn Memory(memory_le);
+    spawn Client(memory_ri)
+}

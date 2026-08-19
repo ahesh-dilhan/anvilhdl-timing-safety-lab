@@ -1,0 +1,33 @@
+cff-version: 1.2.0
+message: "If you use this educational lab, cite this repository and the Anvil paper."
+title: "AnvilHDL Timing-Safety Lab"
+type: software
+authors:
+  - family-names: "Dilhan"
+    given-names: "Ahesh"
+repository-code: "https://github.com/ahesh-dilhan/anvilhdl-timing-safety-lab"
+license: MIT
+date-released: 2026-08-20
+preferred-citation:
+  type: conference-paper
+  title: "Anvil: A General-Purpose Timing-Safe Hardware Description Language"
+  authors:
+    - family-names: "Yu"
+      given-names: "Jason Zhijingcheng"
+    - family-names: "Jha"
+      given-names: "Aditya Ranjan"
+    - family-names: "Mathur"
+      given-names: "Umang"
+    - family-names: "Carlson"
+      given-names: "Trevor E."
+    - family-names: "Saxena"
+      given-names: "Prateek"
+  collection-title: "Proceedings of the 31st ACM International Conference on Architectural Support for Programming Languages and Operating Systems"
+  publisher:
+    name: "Association for Computing Machinery"
+  volume: "2"
+  start: 110
+  end: 136
+  year: 2026
+  doi: "10.1145/3779212.3790125"
+  url: "https://arxiv.org/abs/2503.19447"

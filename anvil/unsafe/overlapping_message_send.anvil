@@ -1,0 +1,10 @@
+chan held_message {
+    left value : (logic[8]@#2)
+}
+
+proc overlapping_message_send(ep : right held_message) {
+    loop {
+        send ep.value(8'd42) >>
+        cycle 1
+    }
+}

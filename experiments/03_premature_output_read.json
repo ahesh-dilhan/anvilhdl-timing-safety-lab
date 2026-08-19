@@ -1,0 +1,26 @@
+{
+  "name": "premature_output_read",
+  "description": "The output datapath samples in cycle one, but the dynamically produced response is not live until cycle two or three.",
+  "expected": "unsafe",
+  "events": [
+    {"id": "request", "delay": 0},
+    {"id": "read_start", "after": ["request"], "delay": 1},
+    {"id": "read_end", "after": ["read_start"], "delay": 1},
+    {"id": "data_ready", "after": ["request"], "delay": {"min": 2, "max": 3}},
+    {"id": "data_expire", "after": ["data_ready"], "delay": 2}
+  ],
+  "lifetimes": [
+    {
+      "id": "response_valid",
+      "resource": "response_data",
+      "interval": {"start": "data_ready", "end": "data_expire"}
+    }
+  ],
+  "uses": [
+    {
+      "id": "output_sample",
+      "resource": "response_data",
+      "interval": {"start": "read_start", "end": "read_end"}
+    }
+  ]
+}

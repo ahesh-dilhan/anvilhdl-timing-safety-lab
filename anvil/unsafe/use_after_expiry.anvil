@@ -1,0 +1,15 @@
+chan memory_read {
+    left req : (logic[8]@res),
+    right res : (logic[8]@req)
+}
+
+proc use_after_expiry(ep : right memory_read) {
+    loop {
+        send ep.req(8'd0) >>
+        let old_data = recv ep.res >>
+        send ep.req(8'd1) >>
+        dprint "expired response = %d" (old_data) >>
+        let new_data = recv ep.res >>
+        dprint "new response = %d" (new_data)
+    }
+}
