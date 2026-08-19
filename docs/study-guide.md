@@ -69,8 +69,8 @@ Practice a five-minute walkthrough:
 5. official-compiler manifest and why it parses JSON `success`;
 6. one possible next experiment.
 
-Do not present planned Anvil/RTL integration as already reproduced. Say exactly
-what was run locally and what is pinned for CI.
+The pinned compiler conformance is reproduced in CI; generated-RTL simulation
+and synthesis remain planned. Keep that evidence boundary explicit.
 
 ### Session 6: mock questions (45 minutes)
 

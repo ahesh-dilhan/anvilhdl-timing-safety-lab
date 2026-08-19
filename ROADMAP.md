@@ -19,7 +19,7 @@ evidence.
 
 - [x] Current upstream revision lock
 - [x] JSON-aware positive/negative fixture harness
-- [ ] Run every fixture against the pinned compiler in GitHub Actions
+- [x] Run every fixture against the pinned compiler in GitHub Actions (5/5)
 - [ ] Add a second profile for the paper-artifact compiler revision
 - [ ] Record normalized diagnostic categories and source spans
 - [ ] Track intentional cross-revision differences as XFAIL, not silent skips

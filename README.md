@@ -1,6 +1,7 @@
 # AnvilHDL Timing-Safety Lab
 
 [![CI](https://github.com/ahesh-dilhan/anvilhdl-timing-safety-lab/actions/workflows/ci.yml/badge.svg)](https://github.com/ahesh-dilhan/anvilhdl-timing-safety-lab/actions/workflows/ci.yml)
+[![Pinned Anvil](https://github.com/ahesh-dilhan/anvilhdl-timing-safety-lab/actions/workflows/anvil-integration.yml/badge.svg)](https://github.com/ahesh-dilhan/anvilhdl-timing-safety-lab/actions/workflows/anvil-integration.yml)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-3776AB.svg)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
@@ -125,9 +126,11 @@ are compile-time reasoning devices; no runtime safety monitor is emitted.
 
 ## Reproducible upstream integration
 
-The independent model always runs without external packages. An optional
-workflow is prepared to check the Anvil fixtures against the official compiler
-revision recorded in [`UPSTREAM.lock`](UPSTREAM.lock). See
+The independent model always runs without external packages. A separate
+workflow builds the official compiler revision recorded in
+[`UPSTREAM.lock`](UPSTREAM.lock). The verified suite currently matches all five
+expectations: two accepted fixtures and three intentional rejections covering
+value use, register mutation under loan, and overlapping message promises. See
 [`docs/reproducibility.md`](docs/reproducibility.md) before updating that pin.
 
 ## References
