@@ -101,6 +101,38 @@ class ConformanceHarnessTests(unittest.TestCase):
         self.assertIn("reported success", detail)
         self.assertIn("exit=17", detail)
 
+    def test_expectation_mismatch_includes_compiler_diagnostic(self) -> None:
+        payload = {
+            "success": False,
+            "errors": [
+                {
+                    "description": [
+                        {"kind": "text", "text": "precise type error"}
+                    ]
+                }
+            ],
+            "output": None,
+        }
+        with tempfile.TemporaryDirectory() as directory:
+            fake = Path(directory) / "fake_anvil.py"
+            fake.write_text(
+                "import json\n"
+                f"print(json.dumps({payload!r}))\n"
+                "raise SystemExit(0)\n",
+                encoding="utf-8",
+            )
+            case = {
+                "path": "anvil/safe/fixed_lifetime_spacing.anvil",
+                "expect": "pass",
+                "concept": "accepted program",
+            }
+            passed, detail = anvil_conformance.run_case(
+                [sys.executable, str(fake)], case
+            )
+
+        self.assertFalse(passed)
+        self.assertIn("precise type error", detail)
+
     def test_expected_rejection_rejects_abnormal_process_exit(self) -> None:
         payload = {
             "success": False,

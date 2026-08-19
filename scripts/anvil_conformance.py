@@ -88,11 +88,13 @@ def run_case(command: list[str], case: dict[str, Any]) -> tuple[bool, str]:
         return False, f"unparseable compiler result (exit={completed.returncode}): {detail}"
 
     expected_success = case["expect"] == "pass"
+    diagnostics = diagnostic_text(result)
     if result["success"] is not expected_success:
+        detail = diagnostics or completed.stderr.strip() or "<none>"
         return (
             False,
             f"expected {case['expect']}, got success={result['success']} "
-            f"(exit={completed.returncode})",
+            f"(exit={completed.returncode}); diagnostics: {detail}",
         )
 
     if expected_success and completed.returncode != 0:
@@ -109,7 +111,6 @@ def run_case(command: list[str], case: dict[str, Any]) -> tuple[bool, str]:
         )
 
     required = case.get("diagnostic_any", [])
-    diagnostics = diagnostic_text(result)
     if required and not any(fragment in diagnostics for fragment in required):
         return False, f"missing expected diagnostic; received: {diagnostics or '<none>'}"
 

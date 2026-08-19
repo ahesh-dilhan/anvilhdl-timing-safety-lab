@@ -10,6 +10,7 @@ proc use_after_expiry(ep : right memory_read) {
         send ep.req(8'd1) >>
         dprint "expired response = %d" (old_data) >>
         let new_data = recv ep.res >>
-        dprint "new response = %d" (new_data)
+        dprint "new response = %d" (new_data) >>
+        cycle 1
     }
 }
