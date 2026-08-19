@@ -28,11 +28,11 @@ jobs:
     timeout-minutes: 30
     steps:
       - name: Check out timing-safety lab
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           path: lab
       - name: Check out pinned AnvilHDL
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           repository: kisp-nus/anvil
           ref: d138cabedbfc3b65c08249ce6a55cb90dad959da

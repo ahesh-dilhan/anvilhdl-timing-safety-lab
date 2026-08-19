@@ -27,5 +27,8 @@ proc Client(ep : right memory_read) {
 proc dynamic_memory_client() {
     chan memory_le -- memory_ri : memory_read;
     spawn Memory(memory_le);
-    spawn Client(memory_ri)
+    spawn Client(memory_ri);
+    loop {
+        cycle 1
+    }
 }

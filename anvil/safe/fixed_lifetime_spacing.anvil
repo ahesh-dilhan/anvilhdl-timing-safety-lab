@@ -22,5 +22,8 @@ proc Producer(ep : right held_message) {
 proc fixed_lifetime_spacing() {
     chan held_le -- held_ri : held_message;
     spawn Consumer(held_le);
-    spawn Producer(held_ri)
+    spawn Producer(held_ri);
+    loop {
+        cycle 1
+    }
 }
