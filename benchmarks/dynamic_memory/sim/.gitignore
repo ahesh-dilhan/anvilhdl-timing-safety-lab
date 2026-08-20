@@ -1,0 +1,9 @@
+build/
+generated/
+work/
+modelsim.ini
+transcript
+*.jou
+*.pb
+*.wdb
+xsim.dir/

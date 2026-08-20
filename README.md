@@ -53,6 +53,42 @@ Current host-only results (verified by `make ci`):
 | Overlapping send | 2 | unsafe in 1 | One dynamic start overlaps an existing promise for the same message. |
 | Short-lived send source | 1 | unsafe in 1 | The source expires before its promised send interval ends. |
 
+## RTL showcase: one timing bug, two detection points
+
+The hardware benchmark drives safe and intentionally unsafe SystemVerilog
+clients through the same six memory transactions and the deterministic response
+latencies `1, 2, 3, 4, 1, 4` cycles:
+
+```bash
+make rtl-demo
+gtkwave benchmarks/dynamic_memory/sim/generated/dynamic_memory.vcd
+```
+
+The unsafe client assumes the request-address loan always lasts one cycle. It
+passes both latency-one transactions, then changes the address before each of
+the four longer responses. The shared monitor and scoreboard expose four
+stability violations and four wrong responses. The safe client waits for the
+dynamic response event and completes all six transactions without either
+failure.
+
+| Case | Transactions | Mismatches | Stability violations | Detection point |
+| --- | ---: | ---: | ---: | --- |
+| Naive SystemVerilog | 6 | 4 | 4 | Executed RTL trace, first witness at cycle 5 |
+| Safe SystemVerilog | 6 | 0 | 0 | All six selected traces pass |
+| Unsafe Anvil fixture | N/A | N/A | N/A | Rejected by the pinned compiler |
+| Safe Anvil fixture | N/A | N/A | N/A | Accepted by the pinned compiler |
+
+The checked-in Quartus 21.1 structural run uses the same Cyclone IV E device,
+20 ns constraint, and fitter seed for both RTL clients. It measured 22 logic
+elements/15 registers for the unsafe three-state client and 18 logic
+elements/13 registers for the safe two-state client. Those numbers describe
+these tiny implementations only; they are not an Anvil PPA claim or board
+timing sign-off.
+
+See the [benchmark methodology](docs/dynamic-memory-benchmark.md),
+[self-checking RTL](benchmarks/dynamic_memory), and
+[measured Quartus CSV](benchmarks/dynamic_memory/quartus/measured_results.csv).
+
 ## What the lab checks
 
 Each JSON experiment defines an event DAG, fixed or bounded-dynamic delays, and
@@ -103,7 +139,9 @@ without misrepresenting bounded exploration as formal proof.
 | [`experiments`](experiments) | Reproducible safe and unsafe timing scenarios |
 | [`tests`](tests) | Unit and regression tests using only `unittest` |
 | [`anvil`](anvil) | Small source-level exercises for the official compiler |
+| [`benchmarks/dynamic_memory`](benchmarks/dynamic_memory) | Self-checking RTL counterexample, VCD flow, and Quartus micro-study |
 | [`docs/paper-notes.md`](docs/paper-notes.md) | Section-by-section technical reading notes |
+| [`docs/dynamic-memory-benchmark.md`](docs/dynamic-memory-benchmark.md) | Fair methodology, measurements, claims, and 90-second walkthrough |
 | [`docs/research-discussion-guide.md`](docs/research-discussion-guide.md) | Concise explanations, research questions, and discussion prompts |
 | [`docs/study-guide.md`](docs/study-guide.md) | Two-day path from the motivating hazard to compiler infrastructure |
 | [`docs/experiment-design.md`](docs/experiment-design.md) | Model assumptions and falsifiable experiment hypotheses |

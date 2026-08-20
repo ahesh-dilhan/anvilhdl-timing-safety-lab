@@ -3,6 +3,8 @@
 
 from __future__ import annotations
 
+import csv
+import hashlib
 import json
 from pathlib import Path
 import re
@@ -120,6 +122,7 @@ def validate_local_links() -> int:
     markdown_files = [ROOT / "README.md", ROOT / "ROADMAP.md"]
     markdown_files.extend(sorted((ROOT / "docs").glob("*.md")))
     markdown_files.extend(sorted((ROOT / "anvil").glob("*.md")))
+    markdown_files.extend(sorted((ROOT / "benchmarks").rglob("*.md")))
     for document in markdown_files:
         text = document.read_text(encoding="utf-8")
         for match in LINK.finditer(text):
@@ -144,6 +147,69 @@ def validate_local_links() -> int:
     return checked
 
 
+def validate_dynamic_memory_benchmark() -> int:
+    required = (
+        "benchmarks/dynamic_memory/rtl/unsafe_dynamic_memory_client.sv",
+        "benchmarks/dynamic_memory/rtl/safe_dynamic_memory_client.sv",
+        "benchmarks/dynamic_memory/rtl/variable_latency_memory.sv",
+        "benchmarks/dynamic_memory/tb/tb_dynamic_memory.sv",
+        "benchmarks/dynamic_memory/sim/run_iverilog.sh",
+        "benchmarks/dynamic_memory/quartus/measured_results.csv",
+        "benchmarks/dynamic_memory/results/measured_behavioral_results.csv",
+    )
+    for relative in required:
+        if not (ROOT / relative).is_file():
+            raise ValueError(f"dynamic-memory artifact does not exist: {relative}")
+
+    rows = json.loads(
+        (ROOT / "benchmarks/dynamic_memory/results/behavioral_summary.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    if rows.get("schema_version") != 1:
+        raise ValueError("unsupported behavioral benchmark result schema")
+    implementations = rows.get("implementations")
+    if not isinstance(implementations, list) or {
+        item.get("name") for item in implementations if isinstance(item, dict)
+    } != {"unsafe", "safe"}:
+        raise ValueError("behavioral benchmark must record safe and unsafe variants")
+
+    sources = {
+        "safe_client": ROOT
+        / "benchmarks/dynamic_memory/rtl/safe_dynamic_memory_client.sv",
+        "unsafe_client": ROOT
+        / "benchmarks/dynamic_memory/rtl/unsafe_dynamic_memory_client.sv",
+        "memory_model": ROOT
+        / "benchmarks/dynamic_memory/rtl/variable_latency_memory.sv",
+        "testbench": ROOT / "benchmarks/dynamic_memory/tb/tb_dynamic_memory.sv",
+    }
+    recorded_hashes = rows.get("source_sha256")
+    if not isinstance(recorded_hashes, dict):
+        raise ValueError("behavioral benchmark lacks source hashes")
+    for name, path in sources.items():
+        observed = hashlib.sha256(path.read_bytes()).hexdigest()
+        if recorded_hashes.get(name) != observed:
+            raise ValueError(f"stale behavioral benchmark source hash: {name}")
+
+    csv_path = ROOT / "benchmarks/dynamic_memory/results/measured_behavioral_results.csv"
+    with csv_path.open(newline="", encoding="utf-8") as stream:
+        behavioral_rows = list(csv.DictReader(stream))
+    if {item.get("implementation") for item in behavioral_rows} != {
+        "unsafe",
+        "safe",
+    }:
+        raise ValueError("behavioral result CSV must contain safe and unsafe rows")
+
+    quartus_path = ROOT / "benchmarks/dynamic_memory/quartus/measured_results.csv"
+    with quartus_path.open(newline="", encoding="utf-8") as stream:
+        quartus_rows = list(csv.DictReader(stream))
+    if {item.get("variant") for item in quartus_rows} != {"unsafe", "safe"}:
+        raise ValueError("Quartus result CSV must contain safe and unsafe rows")
+    if any(item.get("flow_status") != "Successful" for item in quartus_rows):
+        raise ValueError("checked-in Quartus measurement was not successful")
+    return len(required) + 1
+
+
 def main() -> int:
     try:
         lock = read_lock()
@@ -151,6 +217,7 @@ def main() -> int:
         fixture_count = validate_manifest()
         scenario_count = validate_scenarios()
         link_count = validate_local_links()
+        benchmark_count = validate_dynamic_memory_benchmark()
         pdfs = list(ROOT.rglob("*.pdf"))
         if pdfs:
             raise ValueError("do not vendor paper PDFs; cite the canonical URL")
@@ -160,7 +227,8 @@ def main() -> int:
 
     print(
         f"repository metadata valid: {scenario_count} scenarios, "
-        f"{fixture_count} Anvil fixtures, {link_count} local links"
+        f"{fixture_count} Anvil fixtures, {benchmark_count} benchmark artifacts, "
+        f"{link_count} local links"
     )
     return 0
 

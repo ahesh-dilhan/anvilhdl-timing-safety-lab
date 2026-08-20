@@ -26,11 +26,16 @@ evidence.
 
 ## Milestone 3 — RTL boundary experiment
 
+- [x] Build safe and fixed-latency-assumption SystemVerilog clients
+- [x] Drive both through one deterministic variable-latency memory model
+- [x] Check address stability and returned data with a shared scoreboard
+- [x] Produce a portable VCD and machine-readable result lines
+- [x] Run a same-device Quartus structural comparison
 - [ ] Generate SystemVerilog for the safe dynamic-memory client
 - [ ] Connect it to a handwritten variable-latency memory
-- [ ] Inject deterministic backpressure/latency sequences
-- [ ] Check data stability while a transaction is pending
-- [ ] Store VCD checksum, seed, compiler SHA, and tool versions
+- [ ] Add an adapter so generated and hand-written clients share one protocol
+- [ ] Compare generated traces at `-O 0`, `-O 1`, and `-O 2`
+- [ ] Store generated-SV checksums and compiler provenance
 
 ## Milestone 4 — optimizer differential test
 

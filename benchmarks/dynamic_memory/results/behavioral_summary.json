@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "observed_at_utc": "2026-08-20T05:59:14Z",
+  "simulator": {
+    "name": "Icarus Verilog",
+    "version": "12.0",
+    "package": "Ubuntu 24.04 noble 12.0-2build2"
+  },
+  "repository_base_commit": "20185005ee91ce59ed19b27def961f40c3cbf4dd",
+  "upstream_anvil_revision": "d138cabedbfc3b65c08249ce6a55cb90dad959da",
+  "latency_schedule": [1, 2, 3, 4, 1, 4],
+  "implementations": [
+    {
+      "name": "unsafe",
+      "status": "EXPECTED_FAILURE",
+      "transactions": 6,
+      "mismatches": 4,
+      "stability_violations": 4,
+      "first_failure_cycle": 5
+    },
+    {
+      "name": "safe",
+      "status": "PASS",
+      "transactions": 6,
+      "mismatches": 0,
+      "stability_violations": 0,
+      "first_failure_cycle": null
+    }
+  ],
+  "overall_status": "PASS",
+  "schedule_divergences": 0,
+  "source_sha256": {
+    "safe_client": "32a3eb86da881e47df80a8c0256e7548d66294eda7d79557e0996226695ab013",
+    "unsafe_client": "22f384641559633e4f019f9b1cba496c50531e8b780fce04a624fdcd9c6be6a3",
+    "memory_model": "2b8a6224b73ef9464aace9561ae3a34c12e6cdcc294748471c07992be793fafb",
+    "testbench": "fbc3098833e2a74dc9d482a040173a6f5d3528b9023bb6bc253ceab85fca77b2"
+  },
+  "generated_artifact_sha256": {
+    "simulation_log": "b5d4104a471590405f707bd148d231c58f6d38f4e3cefd1a85fa43f4f9bcb146",
+    "normalized_waveform_trace": "469370eb0083fac2cdf5cdb33f528a30a48975484318923dfc46e188960a45f7"
+  },
+  "note": "The generated log and VCD are ignored build products; make rtl-demo regenerates them. The trace hash excludes the VCD $date block. A finite pass is not a proof."
+}
