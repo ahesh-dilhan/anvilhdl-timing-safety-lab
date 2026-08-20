@@ -14,4 +14,8 @@ reports/generated/
 *.vcd
 *.fst
 *.log
+*.jou
+*.pb
+*.wdb
+xsim.dir/
 .DS_Store

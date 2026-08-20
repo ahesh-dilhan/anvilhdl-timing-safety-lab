@@ -1,0 +1,3 @@
+variant,flow_status,quartus_version,family,device,clock_period_ns,logic_elements,combinational_functions,dedicated_logic_registers,total_registers,memory_bits,multipliers_9bit,worst_setup_slack_ns,fmax_mhz,restricted_fmax_mhz,flow_elapsed_s
+unsafe,Successful,21.1.0 Build 842 10/21/2021 SJ Lite Edition,Cyclone IV E,EP4CE115F29C7,20.0,22,22,15,15,0,0,17.289,368.87,250.0,14
+safe,Successful,21.1.0 Build 842 10/21/2021 SJ Lite Edition,Cyclone IV E,EP4CE115F29C7,20.0,18,18,13,13,0,0,17.765,447.43,250.0,15

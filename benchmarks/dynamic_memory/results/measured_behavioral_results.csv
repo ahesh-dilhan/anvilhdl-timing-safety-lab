@@ -1,0 +1,3 @@
+implementation,simulator,simulator_version,latency_schedule,transactions,mismatches,stability_violations,first_failure_cycle,status
+unsafe,Icarus Verilog,12.0,"1,2,3,4,1,4",6,4,4,5,EXPECTED_FAILURE
+safe,Icarus Verilog,12.0,"1,2,3,4,1,4",6,0,0,,PASS

@@ -1,0 +1,22 @@
+Icarus Verilog 12.0 reference observation
+Latency schedule: 1, 2, 3, 4, 1, 4
+
+EVENT implementation=unsafe kind=transaction_pass transaction=0 latency=1 cycle=2
+EVENT implementation=safe kind=transaction_pass transaction=0 latency=1 cycle=2
+EVENT implementation=unsafe kind=stability_violation transaction=1 latency=2 cycle=5 loaned_addr=0x23 observed_addr=0x36
+EVENT implementation=unsafe kind=data_mismatch transaction=1 latency=2 cycle=5 expected=0xe3 observed=0xc9
+EVENT implementation=safe kind=transaction_pass transaction=1 latency=2 cycle=5
+EVENT implementation=unsafe kind=stability_violation transaction=2 latency=3 cycle=8 loaned_addr=0x36 observed_addr=0x49
+EVENT implementation=unsafe kind=data_mismatch transaction=2 latency=3 cycle=9 expected=0xc9 observed=0x37
+EVENT implementation=safe kind=transaction_pass transaction=2 latency=3 cycle=9
+EVENT implementation=unsafe kind=stability_violation transaction=3 latency=4 cycle=12 loaned_addr=0x49 observed_addr=0x5c
+EVENT implementation=unsafe kind=data_mismatch transaction=3 latency=4 cycle=14 expected=0x37 observed=0x1d
+EVENT implementation=safe kind=transaction_pass transaction=3 latency=4 cycle=14
+EVENT implementation=unsafe kind=transaction_pass transaction=4 latency=1 cycle=16
+EVENT implementation=safe kind=transaction_pass transaction=4 latency=1 cycle=16
+EVENT implementation=unsafe kind=stability_violation transaction=5 latency=4 cycle=19 loaned_addr=0x6f observed_addr=0x82
+EVENT implementation=unsafe kind=data_mismatch transaction=5 latency=4 cycle=21 expected=0x7b observed=0xa0
+EVENT implementation=safe kind=transaction_pass transaction=5 latency=4 cycle=21
+RESULT benchmark=dynamic_memory implementation=unsafe status=EXPECTED_FAILURE transactions=6 mismatches=4 stability_violations=4 first_failure_cycle=5
+RESULT benchmark=dynamic_memory implementation=safe status=PASS transactions=6 mismatches=0 stability_violations=0
+RESULT benchmark=dynamic_memory status=PASS expected_unsafe_failures=4 schedule_divergences=0
